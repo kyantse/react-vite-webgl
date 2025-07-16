@@ -49,6 +49,6 @@ export default tseslint.config({
 })
 ```
 
-```WebGL
-基于learnopengl官方代码，以学习为目的使用webgl进行复写
-```
+## OpenGL To WebGL
+
+基于[learnopengl](https://learnopengl-cn.github.io/)官方代码，以学习为目的使用webgl进行复写，路径位于src/pages/GL
