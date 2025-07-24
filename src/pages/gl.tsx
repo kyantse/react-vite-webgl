@@ -20,7 +20,8 @@ import { useEffect, useRef } from "react";
 // import Constructor from "./GL/6.2coordinate_systems_depth";
 // import Constructor from "./GL/6.3.coordinate_systems_multiple";
 // import Constructor from "./GL/7.1.camera_circle";
-import Constructor from "./GL/7.3.camera_mouse_zoom";
+// import Constructor from "./GL/7.3.camera_mouse_zoom";
+import Constructor from "./GL/7.4.camera_class";
 
 const GL = () => {
   const contianer = useRef<HTMLCanvasElement | null>(null);
