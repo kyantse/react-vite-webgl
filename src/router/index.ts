@@ -29,7 +29,7 @@ const routeConfig: IRouteConfig = {
   routes: [
     {
       name: "home",
-      path: "/",
+      path: "/home",
       component: lazy(() => import("@/pages/home")),
     },
     {
@@ -39,7 +39,7 @@ const routeConfig: IRouteConfig = {
     },
     {
       name: "gl",
-      path: "/gl",
+      path: "/",
       component: lazy(() => import("@/pages/gl")),
     },
   ],
