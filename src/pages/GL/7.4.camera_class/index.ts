@@ -1,6 +1,6 @@
-import ShaderClass from "./ShaderClass.ts";
+import ShaderClass from "./class/ShaderClass.ts";
 import { mat4, vec3 } from "gl-matrix";
-import Camera, { CameraMovement } from "./CameraClass.ts";
+import Camera, { CameraMovement } from "./class/CameraClass.ts";
 
 export default class Constructor {
   gl!: WebGL2RenderingContext | null;

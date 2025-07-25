@@ -1,5 +1,5 @@
-import { initShaders } from "../utils/index.ts";
-import { VSHADER_SOURCE, FSHADER_SOURCE } from "./glsl.ts";
+import { initShaders } from "../../utils/index.ts";
+import { VSHADER_SOURCE, FSHADER_SOURCE } from "../glsl.ts";
 
 export default class ShaderClass {
   gl: WebGL2RenderingContext | null;
