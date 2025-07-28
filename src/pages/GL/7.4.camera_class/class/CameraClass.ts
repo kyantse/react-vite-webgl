@@ -78,6 +78,9 @@ export default class Camera {
       vec3.scale(temp, this.Right, velocity);
       vec3.add(this.Position, this.Position, temp);
     }
+
+    // 将镜头限制在地面
+    // this.Position[1] = 0;
   }
 
   processMouseMovement(
