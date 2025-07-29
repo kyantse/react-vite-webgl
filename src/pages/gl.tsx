@@ -21,7 +21,8 @@ import { useEffect, useRef } from "react";
 // import Constructor from "./GL/6.3.coordinate_systems_multiple";
 // import Constructor from "./GL/7.1.camera_circle";
 // import Constructor from "./GL/7.3.camera_mouse_zoom";
-import Constructor from "./GL/7.4.camera_class";
+// import Constructor from "./GL/7.4.camera_class";
+import Constructor from "./GL/lighting/1.colors";
 
 const GL = () => {
   const contianer = useRef<HTMLCanvasElement | null>(null);
@@ -42,7 +43,13 @@ const GL = () => {
         justifyContent: "center",
       }}
     >
-      <canvas height={600} width={800} ref={(v) => (contianer.current = v)} />
+      {/* 前置章节使用此canvas */}
+      {/* <canvas height={600} width={800} ref={(v) => (contianer.current = v)} /> */}
+      {/* light章节开始使用此canvas */}
+      <canvas
+        style={{ height: "100%", width: "100%" }}
+        ref={(v) => (contianer.current = v)}
+      />
     </div>
   );
 };
