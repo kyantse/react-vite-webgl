@@ -22,7 +22,8 @@ import { useEffect, useRef } from "react";
 // import Constructor from "./GL/7.1.camera_circle";
 // import Constructor from "./GL/7.3.camera_mouse_zoom";
 // import Constructor from "./GL/7.4.camera_class";
-import Constructor from "./GL/lighting/1.colors";
+// import Constructor from "./GL/lighting/1.colors";
+import Constructor from "./GL/lighting/2.1.basic_lighting_diffuse";
 
 const GL = () => {
   const contianer = useRef<HTMLCanvasElement | null>(null);
