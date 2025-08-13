@@ -125,8 +125,8 @@ export default class Constructor {
 
     // 物体
     this.lightingShader.use();
-    this.lightCubeShader.setVec3("light.position", this.lightPos);
-    this.lightCubeShader.setVec3("viewPos", this.camera.Position);
+    this.lightingShader.setVec3("light.position", this.lightPos);
+    this.lightingShader.setVec3("viewPos", this.camera.Position);
 
     // light properties
     const lightColor = [
