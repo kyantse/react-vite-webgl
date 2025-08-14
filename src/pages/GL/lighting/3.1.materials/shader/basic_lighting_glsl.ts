@@ -12,6 +12,7 @@ export const VSHADER_SOURCE: string = /* glsl */ `#version 300 es
     void main()
     {
       FragPos = vec3(model * vec4(aPos, 1.0));
+      // 消除不等比缩放带来的影响 法线矩阵(Normal Matrix)*法线，法线矩阵证明见图片
       Normal = mat3(transpose(inverse(model))) * aNormal;  
       
       gl_Position = projection * view * vec4(FragPos, 1.0);
