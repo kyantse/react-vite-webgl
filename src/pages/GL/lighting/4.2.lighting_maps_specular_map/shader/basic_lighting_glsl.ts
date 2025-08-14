@@ -69,7 +69,9 @@ export const FSHADER_SOURCE: string = /* glsl */ `#version 300 es
         //使用-lightDir是因为reflect函数期望入射方向
         vec3 reflectDir = reflect(-lightDir, norm);  
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-        vec3 specular = light.specular * spec * texture(material.specular,TexCoords).rgb;  
+        // vec3 specular = light.specular * spec * texture(material.specular,TexCoords).rgb;  
+        // 尝试在片段着色器中反转镜面光贴图的颜色值，让木头显示镜面高光而钢制边缘不反光（由于钢制边缘中有一些裂缝，边缘仍会显示一些镜面高光，虽然强度会小很多）：
+        vec3 specular = light.specular * spec * (vec3(1.0) - vec3(texture(material.specular, TexCoords))); 
         
         vec3 result = ambient + diffuse + specular;
         FragColor = vec4(result, 1.0);
