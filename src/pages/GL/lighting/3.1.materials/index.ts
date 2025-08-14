@@ -257,14 +257,14 @@ export default class Constructor {
   }
 
   getProjection() {
-    const projection = mat4.create();
-    return mat4.perspective(
-      projection,
-      (this.camera.Zoom * Math.PI) / 180,
-      (this.gl!.canvas as HTMLCanvasElement).width /
-        (this.gl!.canvas as HTMLCanvasElement).height,
-      0.1,
-      100.0
-    );
+    // Vertical field of view in radians(垂直视场的弧度)
+    const fovy = (this.camera.Zoom * Math.PI) / 180;
+    // Aspect ratio. typically viewport width/height
+    const aspect = this.gl!.canvas.width / this.gl!.canvas.height;
+    // Near bound of the frustum(截头锥体)
+    const near = 0.1;
+    // Far bound of the frustum, can be null or Infinity
+    const far = 100.0;
+    return mat4.perspective(mat4.create(), fovy, aspect, near, far);
   }
 }
