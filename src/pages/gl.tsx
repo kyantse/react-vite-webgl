@@ -29,7 +29,8 @@ import { useEffect, useRef } from "react";
 // import Constructor from "./GL/lighting/2.4.basic_lighting_exercise2";
 // import Constructor from "./GL/lighting/3.1.materials";
 // import Constructor from "./GL/lighting/3.2.materials_exercise1";
-import Constructor from "./GL/lighting/4.2.lighting_maps_specular_map";
+// import Constructor from "./GL/lighting/4.2.lighting_maps_specular_map";
+import Constructor from "./GL/lighting/4.4.lighting_maps_exercise4";
 
 const GL = () => {
   const contianer = useRef<HTMLCanvasElement | null>(null);
