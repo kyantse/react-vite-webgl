@@ -104,7 +104,7 @@ export default class Constructor {
     const { cubeVao, lightVao } = this.initVertexBuffers() || {};
     gl.enable(gl.DEPTH_TEST);
     // 设置背景色
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearColor(0.1, 0.1, 0.1, 1.0);
     //
     // 清除颜色缓冲区，将画布上的颜色重置为之前通过 gl.clearColor 设置的背景色（这里设置为黑色）。
     // 这一步操作会擦除之前绘制在屏幕上的颜色信息，为新的一帧绘制做准备。
