@@ -20,8 +20,6 @@ export default class Constructor {
   lastX: number = 0;
   lastY: number = 0;
 
-  lightPos: vec3 = vec3.fromValues(1.2, 1.0, 2.0);
-
   // positions all containers
   cubePositions: Array<vec3> = [
     vec3.fromValues(0.0, 0.0, 0.0),
@@ -51,7 +49,7 @@ export default class Constructor {
     this.gl?.viewport(0, 0, canvas.width, canvas.height);
 
     this.init(this.gl);
-    // this.initInputEvent(canvas);
+    this.initInputEvent(canvas);
   }
 
   initInputEvent(canvas: HTMLCanvasElement) {
@@ -117,7 +115,7 @@ export default class Constructor {
     const specularMap = await this.loadTexture(
       "./images/container2_specular.png"
     );
-    const { cubeVao, lightVao } = this.initVertexBuffers() || {};
+    const { cubeVao } = this.initVertexBuffers() || {};
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0.1, 0.1, 0.1, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -130,11 +128,16 @@ export default class Constructor {
 
     // 物体
     this.lightingShader.use();
-    this.lightingShader.setVec3("light.position", this.lightPos);
+    this.lightingShader.setVec3("light.position", this.camera.Position);
+    this.lightingShader.setVec3("light.direction", this.camera.Front);
+    this.lightingShader.setFloat(
+      "light.cutOff",
+      Math.cos((12.5 * Math.PI) / 180)
+    );
     this.lightingShader.setVec3("viewPos", this.camera.Position);
 
-    this.lightingShader.setVec3("light.ambient", [0.2, 0.2, 0.2]);
-    this.lightingShader.setVec3("light.diffuse", [0.5, 0.5, 0.5]);
+    this.lightingShader.setVec3("light.ambient", [0.1, 0.1, 0.1]);
+    this.lightingShader.setVec3("light.diffuse", [0.8, 0.8, 0.8]);
     this.lightingShader.setVec3("light.specular", [1.0, 1.0, 1.0]);
 
     this.lightingShader.setFloat("light.constant", 1.0);
@@ -143,7 +146,7 @@ export default class Constructor {
 
     // material properties
     // 材质属性设置（对应material properties）
-    const materialShininess = 64.0; // material.shininess
+    const materialShininess = 32.0; // material.shininess
     this.lightingShader.setInt("material.diffuse", 0);
     this.lightingShader.setInt("material.specular", 1);
     this.lightingShader.setFloat("material.shininess", materialShininess);
@@ -192,22 +195,6 @@ export default class Constructor {
 
       gl.drawArrays(gl.TRIANGLES, 0, 36);
     }
-
-    // 光源
-    this.lightCubeShader.use();
-    // view/projection transformations
-    this.lightCubeShader.setMat4("projection", this.getProjection());
-    this.lightCubeShader.setMat4("view", this.camera.getViewMatrix());
-
-    // world transformation
-    const model = mat4.create();
-    mat4.translate(model, model, this.lightPos);
-    mat4.scale(model, model, vec3.fromValues(0.2, 0.2, 0.2)); // a smaller cube
-    this.lightCubeShader.setMat4("model", model);
-    // draw
-    // ！多个vao存在时，在绘制前需再次绑定vao
-    gl.bindVertexArray(lightVao!);
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
 
     // 每帧更新相机
     this.updateCameraPosition();
