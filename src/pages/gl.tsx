@@ -32,7 +32,8 @@ import { useEffect, useRef } from "react";
 // import Constructor from "./GL/lighting/4.2.lighting_maps_specular_map";
 // import Constructor from "./GL/lighting/5.1.light_casters_directional";
 // import Constructor from "./GL/lighting/5.2.light_casters_point";
-import Constructor from "./GL/lighting/5.3.light_casters_spot";
+// import Constructor from "./GL/lighting/5.3.light_casters_spot";
+import Constructor from "./GL/lighting/5.4.light_casters_spot_soft";
 
 const GL = () => {
   const contianer = useRef<HTMLCanvasElement | null>(null);
