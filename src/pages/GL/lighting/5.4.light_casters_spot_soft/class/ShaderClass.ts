@@ -1,4 +1,4 @@
-import { mat4, vec3 } from "gl-matrix";
+import { mat4, vec3, mat3 } from "gl-matrix";
 import { initShaders } from "../../../utils/index.ts";
 
 export default class ShaderClass {
@@ -29,6 +29,11 @@ export default class ShaderClass {
   setMat4(name: string, value: mat4) {
     const position = this.gl?.getUniformLocation(this.program!, name);
     this.gl?.uniformMatrix4fv(position!, false, value);
+  }
+
+  setMat3(name: string, value: mat3) {
+    const position = this.gl?.getUniformLocation(this.program!, name);
+    this.gl?.uniformMatrix3fv(position!, false, value);
   }
 
   setFloat(name: string, value: GLfloat) {

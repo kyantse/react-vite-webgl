@@ -1,5 +1,5 @@
 import ShaderClass from "./class/ShaderClass.ts";
-import { mat4, vec3 } from "gl-matrix";
+import { mat4, vec3, mat3 } from "gl-matrix";
 import Camera, { CameraMovement } from "./class/CameraClass.ts";
 import shader_lightCube from "./shader/light_cube_glsl.ts";
 import shader_lighting from "./shader/basic_lighting_glsl.ts";
@@ -196,6 +196,16 @@ export default class Constructor {
       );
 
       this.lightingShader.setMat4("model", model);
+
+      // 法线矩阵(Normal Matrix)的计算
+      const normalMatrix = model;
+      mat4.invert(normalMatrix, normalMatrix);
+      mat4.transpose(normalMatrix, normalMatrix);
+
+      this.lightingShader.setMat3(
+        "normalMatrix",
+        mat3.fromMat4(mat3.create(), normalMatrix)
+      );
 
       gl.drawArrays(gl.TRIANGLES, 0, 36);
     }

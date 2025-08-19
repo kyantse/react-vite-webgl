@@ -10,11 +10,12 @@ export const VSHADER_SOURCE: string = /* glsl */ `#version 300 es
     uniform mat4 model;
     uniform mat4 view;
     uniform mat4 projection;
+    uniform mat3 normalMatrix;
 
     void main()
     {
       FragPos = vec3(model * vec4(aPos, 1.0));
-      Normal = mat3(transpose(inverse(model))) * aNormal;  
+      Normal = normalMatrix * aNormal;  
       TexCoords = aTexCoords;
       gl_Position = projection * view * vec4(FragPos, 1.0);
     }
