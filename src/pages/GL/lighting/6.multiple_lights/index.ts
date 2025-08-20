@@ -34,6 +34,14 @@ export default class Constructor {
     vec3.fromValues(-1.3, 1.0, -1.5),
   ];
 
+  // positions of the point lights
+  pointLightPositions: Array<vec3> = [
+    vec3.fromValues(0.7, 0.2, 2.0),
+    vec3.fromValues(2.3, -3.3, -4.0),
+    vec3.fromValues(-4.0, 2.0, -12.0),
+    vec3.fromValues(0.0, 0.0, -3.0),
+  ];
+
   constructor(canvas: HTMLCanvasElement) {
     if (!canvas) return;
     this.gl = canvas.getContext("webgl2");
@@ -115,7 +123,7 @@ export default class Constructor {
     const specularMap = await this.loadTexture(
       "./images/container2_specular.png"
     );
-    const { cubeVao } = this.initVertexBuffers() || {};
+    const { cubeVao, lightVao } = this.initVertexBuffers() || {};
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0.1, 0.1, 0.1, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -154,6 +162,59 @@ export default class Constructor {
     this.lightingShader.setInt("material.diffuse", 0);
     this.lightingShader.setInt("material.specular", 1);
     this.lightingShader.setFloat("material.shininess", materialShininess);
+
+    /*
+      Here we set all the uniforms for the 5/6 types of lights we have. We have to set them manually and index 
+      the proper PointLight struct in the array to set each uniform variable. This can be done more code-friendly
+      by defining light types as classes and set their values in there, or by using a more efficient uniform approach
+      by using 'Uniform buffer objects', but that is something we'll discuss in the 'Advanced GLSL' tutorial.
+    */
+    // directional light
+    this.lightingShader.setVec3("dirLight.direction", [-0.2, -1.0, -0.3]);
+    this.lightingShader.setVec3("dirLight.ambient", [0.05, 0.05, 0.05]);
+    this.lightingShader.setVec3("dirLight.diffuse", [0.4, 0.4, 0.4]);
+    this.lightingShader.setVec3("dirLight.specular", [0.5, 0.5, 0.5]);
+    // point light
+    for (let index = 0; index < this.pointLightPositions.length; index++) {
+      const pointLightPosition = this.pointLightPositions[index];
+      this.lightingShader.setVec3(
+        `pointLights[${index}].position`,
+        pointLightPosition
+      );
+      this.lightingShader.setVec3(
+        `pointLights[${index}].ambient`,
+        [0.05, 0.05, 0.05]
+      );
+      this.lightingShader.setVec3(
+        `pointLights[${index}].diffuse`,
+        [0.8, 0.8, 0.8]
+      );
+      this.lightingShader.setVec3(
+        `pointLights[${index}].specular`,
+        [1.0, 1.0, 1.0]
+      );
+      this.lightingShader.setFloat(`pointLights[${index}].constant`, 1.0);
+      this.lightingShader.setFloat(`pointLights[${index}].linear`, 0.09);
+      this.lightingShader.setFloat(`pointLights[${index}].quadratic`, 0.032);
+    }
+
+    // spotLight
+    this.lightingShader.setVec3("spotLight.position", this.camera.Position);
+    this.lightingShader.setVec3("spotLight.direction", this.camera.Front);
+    this.lightingShader.setVec3("spotLight.ambient", [0.0, 0.0, 0.0]);
+    this.lightingShader.setVec3("spotLight.diffuse", [1.0, 1.0, 1.0]);
+    this.lightingShader.setVec3("spotLight.specular", [1.0, 1.0, 1.0]);
+    this.lightingShader.setFloat("spotLight.constant", 1.0);
+    this.lightingShader.setFloat("spotLight.linear", 0.09);
+    this.lightingShader.setFloat("spotLight.quadratic", 0.032);
+    this.lightingShader.setFloat(
+      "spotLight.cutOff",
+      Math.cos((12.5 * Math.PI) / 180)
+    );
+    this.lightingShader.setFloat(
+      "spotLight.outerCutOff",
+      Math.cos((15 * Math.PI) / 180)
+    );
 
     // view/projection transformations
     this.lightingShader.setMat4("projection", this.getProjection());
@@ -194,6 +255,21 @@ export default class Constructor {
         mat3.fromMat4(mat3.create(), normalMatrix)
       );
 
+      gl.drawArrays(gl.TRIANGLES, 0, 36);
+    }
+
+    // 光源
+    this.lightCubeShader.use();
+    this.lightCubeShader.setMat4("projection", this.getProjection());
+    this.lightCubeShader.setMat4("view", this.camera.getViewMatrix());
+
+    // we now draw as many light bulbs as we have point lights.
+    gl.bindVertexArray(lightVao!);
+    for (let index = 0; index < 4; index++) {
+      const model = mat4.create();
+      mat4.translate(model, model, this.pointLightPositions[index]);
+      mat4.scale(model, model, vec3.fromValues(0.2, 0.2, 0.2));
+      this.lightCubeShader.setMat4("model", model);
       gl.drawArrays(gl.TRIANGLES, 0, 36);
     }
 
