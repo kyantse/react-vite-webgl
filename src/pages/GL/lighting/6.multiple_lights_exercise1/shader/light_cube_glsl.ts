@@ -12,9 +12,11 @@ export const VSHADER_SOURCE: string = /* glsl */ `#version 300 es
 export const FSHADER_SOURCE: string = /* glsl */ `#version 300 es
         precision mediump float;
         out vec4 outColor;
+
+        uniform vec3 cubeColor;
       
         void main(){
-            outColor =  vec4(1.0);
+            outColor =  vec4(cubeColor,1.0);
         }
     `;
 

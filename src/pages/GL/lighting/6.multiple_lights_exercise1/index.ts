@@ -42,6 +42,14 @@ export default class Constructor {
     vec3.fromValues(0.0, 0.0, -3.0),
   ];
 
+  // colors of the point lights
+  pointLightColors: Array<vec3> = [
+    vec3.fromValues(1.0, 0.6, 0.0),
+    vec3.fromValues(1.0, 0.0, 0.0),
+    vec3.fromValues(1.0, 1.0, 0.0),
+    vec3.fromValues(0.2, 0.2, 1.0),
+  ];
+
   constructor(canvas: HTMLCanvasElement) {
     if (!canvas) return;
     this.gl = canvas.getContext("webgl2");
@@ -125,7 +133,8 @@ export default class Constructor {
     );
     const { cubeVao, lightVao } = this.initVertexBuffers() || {};
     gl.enable(gl.DEPTH_TEST);
-    gl.clearColor(0.1, 0.1, 0.1, 1.0);
+    // 修改画布颜色
+    gl.clearColor(0.75, 0.52, 0.3, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
 
@@ -171,27 +180,28 @@ export default class Constructor {
     */
     // directional light
     this.lightingShader.setVec3("dirLight.direction", [-0.2, -1.0, -0.3]);
-    this.lightingShader.setVec3("dirLight.ambient", [0.05, 0.05, 0.05]);
-    this.lightingShader.setVec3("dirLight.diffuse", [0.4, 0.4, 0.4]);
+    this.lightingShader.setVec3("dirLight.ambient", [0.3, 0.24, 0.14]);
+    this.lightingShader.setVec3("dirLight.diffuse", [0.7, 0.42, 0.26]);
     this.lightingShader.setVec3("dirLight.specular", [0.5, 0.5, 0.5]);
     // point light
     for (let index = 0; index < this.pointLightPositions.length; index++) {
       const pointLightPosition = this.pointLightPositions[index];
+      const pointLightColor = this.pointLightColors[index];
       this.lightingShader.setVec3(
         `pointLights[${index}].position`,
         pointLightPosition
       );
       this.lightingShader.setVec3(
         `pointLights[${index}].ambient`,
-        [0.05, 0.05, 0.05]
+        vec3.scale(vec3.create(), pointLightColor, 0.1)
       );
       this.lightingShader.setVec3(
         `pointLights[${index}].diffuse`,
-        [0.8, 0.8, 0.8]
+        pointLightColor
       );
       this.lightingShader.setVec3(
         `pointLights[${index}].specular`,
-        [1.0, 1.0, 1.0]
+        pointLightColor
       );
       this.lightingShader.setFloat(`pointLights[${index}].constant`, 1.0);
       this.lightingShader.setFloat(`pointLights[${index}].linear`, 0.09);
@@ -202,8 +212,8 @@ export default class Constructor {
     this.lightingShader.setVec3("spotLight.position", this.camera.Position);
     this.lightingShader.setVec3("spotLight.direction", this.camera.Front);
     this.lightingShader.setVec3("spotLight.ambient", [0.0, 0.0, 0.0]);
-    this.lightingShader.setVec3("spotLight.diffuse", [1.0, 1.0, 1.0]);
-    this.lightingShader.setVec3("spotLight.specular", [1.0, 1.0, 1.0]);
+    this.lightingShader.setVec3("spotLight.diffuse", [0.8, 0.8, 1.0]);
+    this.lightingShader.setVec3("spotLight.specular", [0.8, 0.8, 1.0]);
     this.lightingShader.setFloat("spotLight.constant", 1.0);
     this.lightingShader.setFloat("spotLight.linear", 0.09);
     this.lightingShader.setFloat("spotLight.quadratic", 0.032);
@@ -213,7 +223,7 @@ export default class Constructor {
     );
     this.lightingShader.setFloat(
       "spotLight.outerCutOff",
-      Math.cos((15 * Math.PI) / 180)
+      Math.cos((13 * Math.PI) / 180)
     );
 
     // view/projection transformations
@@ -270,6 +280,7 @@ export default class Constructor {
       mat4.translate(model, model, this.pointLightPositions[index]);
       mat4.scale(model, model, vec3.fromValues(0.2, 0.2, 0.2));
       this.lightCubeShader.setMat4("model", model);
+      this.lightCubeShader.setVec3("cubeColor", this.pointLightColors[index]);
       gl.drawArrays(gl.TRIANGLES, 0, 36);
     }
 
