@@ -64,6 +64,9 @@ export default class Constructor {
     canvas.height = canvas.clientHeight * window.devicePixelRatio;
     this.gl?.viewport(0, 0, canvas.width, canvas.height);
 
+    this.loadModel();
+
+    return;
     this.init(this.gl);
     this.initInputEvent(canvas);
   }
@@ -123,6 +126,46 @@ export default class Constructor {
   updateCameraPosByWheel(event: WheelEvent): void {
     event.preventDefault();
     this.camera.processMouseScroll(event.deltaY);
+  }
+
+  loadModel() {
+    // @ts-expect-error: assimpjs is global
+    assimpjs().then((ajs) => {
+      const files = [
+        "./models/backpack/backpack.obj",
+        "./models/backpack/backpack.mtl",
+      ];
+      Promise.all(files.map((file) => fetch(file)))
+        .then((responses) => {
+          return Promise.all(responses.map((res) => res.arrayBuffer()));
+        })
+        .then((arrayBuffers) => {
+          // create new file list object, and add the files
+          const fileList = new ajs.FileList();
+          for (let i = 0; i < files.length; i++) {
+            fileList.AddFile(files[i], new Uint8Array(arrayBuffers[i]));
+          }
+
+          // convert file list to assimp json
+          const result = ajs.ConvertFileList(fileList, "assjson");
+
+          // check if the conversion succeeded
+          if (!result.IsSuccess() || result.FileCount() == 0) {
+            // resultDiv.innerHTML = result.GetErrorCode ();
+            console.log(result.GetErrorCode());
+            return;
+          }
+
+          // get the result file, and convert to string
+          const resultFile = result.GetFile(0);
+          const jsonContent = new TextDecoder().decode(resultFile.GetContent());
+
+          // parse the result json
+          const resultJson = JSON.parse(jsonContent);
+
+          console.log(resultJson);
+        });
+    });
   }
 
   async init(gl: WebGL2RenderingContext | null) {

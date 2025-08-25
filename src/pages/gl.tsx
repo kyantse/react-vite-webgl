@@ -35,7 +35,8 @@ import { useEffect, useRef } from "react";
 // import Constructor from "./GL/lighting/5.3.light_casters_spot";
 // import Constructor from "./GL/lighting/5.4.light_casters_spot_soft";
 // import Constructor from "./GL/lighting/6.multiple_lights";
-import Constructor from "./GL/lighting/6.multiple_lights_exercise1";
+// import Constructor from "./GL/lighting/6.multiple_lights_exercise1";
+import Constructor from "./GL/lighting/7.model_loading";
 
 const GL = () => {
   const contianer = useRef<HTMLCanvasElement | null>(null);
